@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>계산기 만들기</title>
+</head>
+
+<body>
+  <input type="text" class="cal-ipt" disabled>
+  <p class="result"></p>
+  <div class="cal-wrap">
+    <button class="cal-btn c-btn">C</button>
+    <button class="cal-btn operator">%</button>
+    <button class="cal-btn operator">()</button>
+    <button class="cal-btn oper-btn operator" value="/">/</button>
+    <button class="cal-btn num">7</button>
+    <button class="cal-btn num">8</button>
+    <button class="cal-btn num">9</button>
+    <button class="cal-btn oper-btn operator" value="*">*</button>
+    <button class="cal-btn num">4</button>
+    <button class="cal-btn num">5</button>
+    <button class="cal-btn num">6</button>
+    <button class="cal-btn oper-btn operator">-</button>
+    <button class="cal-btn num">1</button>
+    <button class="cal-btn num">2</button>
+    <button class="cal-btn num">3</button>
+    <button class="cal-btn oper-btn operator">+</button>
+    <button class="cal-btn num">.</button>
+    <button class="cal-btn num">0</button>
+    <button class="cal-btn" value="del">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="17" viewBox="0 0 24 17">
+        <g data-name="그룹 11">
+          <path data-name="합치기 1" d="M6 17 0 8.5 6 0h18v17z" />
+          <g data-name="그룹 12" transform="translate(-1549.406 -405.713)">
+            <rect data-name="사각형 7" width="1.884" height="11.303" rx=".942" transform="rotate(45 288.65 2095.156)"
+              style="fill:#fff" />
+            <rect data-name="사각형 8" width="1.884" height="11.303" rx=".942" transform="rotate(-45 1275.003 -1675.292)"
+              style="fill:#fff" />
+          </g>
+        </g>
+      </svg>
+    </button>
+    <button class="cal-btn equals-btn operator">=</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
