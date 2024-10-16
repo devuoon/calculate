@@ -1,12 +1,14 @@
-const inputField = document.querySelector(".cal-ipt");
-const resultField = document.querySelector(".result");
-const buttons = document.querySelectorAll(".cal-btn");
+const inputField = document.querySelector('.cal-ipt');
+const resultField = document.querySelector('.result');
+const buttons = document.querySelectorAll('.cal-btn');
 
-let currentInput = ""; // 현재 입력 값
+let currentInput = ''; // 현재 입력 값
+const hasOpenParenthesis = /\(/.test(currentInput);
+const openParenthesisCount = (currentInput.match(/\(/g) || []).length;
 
 // 이벤트 핸들러 설정
 buttons.forEach((button) => {
-  button.addEventListener("click", handleButtonClick);
+  button.addEventListener('click', handleButtonClick);
 });
 
 // 버튼 클릭 이벤트 처리
@@ -15,26 +17,27 @@ function handleButtonClick(event) {
   const value = event.target.textContent;
   const realValue = event.target.value;
   // 버튼의 클래스가 연산자인지 판별
-  const isCurrentOperator = btnEvent.classList.contains("operator");
+  const isCurrentOperator = btnEvent.classList.contains('operator');
   // 마지막 입력
   const lastChar = currentInput.slice(-1);
   // 마지막 입력이 연산자인지 판별
   const isLastCharOperator = /[+\-*/%]/.test(lastChar);
   // 마지막 입력이 . 인지 판별
-  const isLastDecimalPoint = lastChar === ".";
+  const isLastDecimalPoint = lastChar === '.';
 
-  if (value === "C") {
+  if (value === 'C') {
+    openParenthesis = true;
     clearInput();
-  } else if (value === "=") {
+  } else if (value === '=') {
     if ((isLastCharOperator && isCurrentOperator) || isLastDecimalPoint) {
       return; // 연산자가 연속으로 입력되는 것을 막음
     } else {
       displayResult(calculate(currentInput));
     }
-  } else if (realValue === "del") {
+  } else if (realValue === 'del') {
     currentInput = currentInput.slice(0, -1); // 마지막 문자 삭제
     inputField.value = currentInput; // inputField 업데이트
-  } else if (value === "%") {
+  } else if (value === '%') {
     // 정규식을 사용하여 마지막 숫자 추출
     const match = currentInput.match(/(\d+(\.\d+)?)$/); // 마지막 숫자 매칭
     if (match) {
@@ -43,9 +46,11 @@ function handleButtonClick(event) {
       currentInput = currentInput.slice(0, -lastNumber.length) + percentValue; // 원래 입력에서 마지막 숫자를 백분율로 변환된 숫자로 교체
       inputField.value = currentInput; // UI 업데이트
     }
+  } else if (value === '()') {
+    handleParenthesis();
   } else {
     // 첫 입력에 연산자가 들어가지 않도록 하기
-    if (currentInput === "" && isCurrentOperator) {
+    if (currentInput === '' && isCurrentOperator) {
       return;
     }
     // 연산자가 연속으로 입력되는 것을 막음
@@ -53,8 +58,32 @@ function handleButtonClick(event) {
       return;
     }
     // 소숫점이 연속으로 입력되는 것을 막음
-    if (isLastDecimalPoint && value === ".") {
+    if (isLastDecimalPoint && value === '.') {
       return;
+    }
+
+    // currentInput 업데이트 후 여는 괄호 개수 재계산
+    const openParenthesisCount = (currentInput.match(/\(/g) || []).length;
+    const closeParenthesisCount = (currentInput.match(/\)/g) || []).length;
+
+    // 여는 괄호 뒤에 연산자가 올 수 없도록 함
+    if (lastChar === '(' && isCurrentOperator) {
+      return;
+    }
+
+    if (lastChar === '(' && !/[0-9]/.test(value)) {
+      return;
+    }
+
+    // 괄호 안의 패턴이 여는 괄호, 숫자, 연산자, 숫자, 닫는 괄호인지 검증
+    if (openParenthesisCount > closeParenthesisCount) {
+      const insideParens = currentInput.match(/\([0-9]+[+\-*/][0-9]+\)$/);
+      if (insideParens && value === ')') {
+        updateInput(value); // 닫는 괄호 입력 가능
+        return;
+      } else if (value === ')') {
+        return; // 패턴이 맞지 않으면 닫는 괄호 입력 불가
+      }
     }
 
     updateInput(value);
@@ -73,59 +102,86 @@ function removeLastCharacter(currentInput) {
 function updateInput(value) {
   currentInput += value;
   inputField.value = currentInput;
-  resultField.textContent = ""; // 결과 초기화
+  resultField.textContent = ''; // 결과 초기화
 }
 
 // 입력값과 결과를 초기화
 function clearInput() {
-  currentInput = "";
+  currentInput = '';
   inputField.value = currentInput;
-  resultField.textContent = "";
+  resultField.textContent = '';
 }
 
 // 결과를 화면에 표시
 function displayResult(result) {
   resultField.textContent = result;
-  currentInput = ""; // 입력값 초기화
+  currentInput = ''; // 입력값 초기화
 }
 
-// 괄호 입력
-function parentheses() {}
+// 괄호 입력 처리 함수
+function handleParenthesis() {
+  // currentInput에서 여는 괄호 '('의 개수 계산
+  const openParenthesisCount = (currentInput.match(/\(/g) || []).length;
+  const closeParenthesisCount = (currentInput.match(/\)/g) || []).length;
+
+  // 여는 괄호와 닫는 괄호의 개수가 같을 때는 '('을 추가하고,
+  // 여는 괄호가 더 많을 때는 ')'을 추가합니다.
+  if (openParenthesisCount === closeParenthesisCount) {
+    currentInput += '(';
+  } else {
+    currentInput += ')';
+  }
+
+  inputField.value = currentInput; // 입력창 업데이트
+}
 
 // 계산 로직 수행
 function calculate(expression) {
+  // 숫자와 괄호를 곱셈으로 변환: 숫자 뒤에 여는 괄호가 있으면 `*`를 추가
+  expression = expression.replace(/(\d)(\()/g, '$1*$2');
+
+  // 괄호로 감싸인 부분 우선 계산
+  while (/\([^()]+\)/.test(expression)) {
+    expression = expression.replace(/\([^()]+\)/, (match) => {
+      return calculate(match.slice(1, -1)); // 괄호 내 계산 후 괄호 제거
+    });
+  }
+
   const tokens = expression.match(/(\d+(\.\d+)?|\D)/g);
 
-  // 곱셈 나눗셈 우선순위 계산
+  // 곱셈, 나눗셈 우선 처리
   for (let i = 0; i < tokens.length; i++) {
-    if (tokens[i] === "*" || tokens[i] === "/") {
+    if (tokens[i] === '*' || tokens[i] === '/') {
       const left = Number(tokens[i - 1]);
       const right = Number(tokens[i + 1]);
-      const result = tokens[i] === "*" ? left * right : left / right;
+      const result = tokens[i] === '*' ? left * right : left / right;
+      // 0으로 나누는 경우 처리
+      if (tokens[i] === '/' && right === 0) {
+        return '0으로 나눌 수 없음';
+      }
       tokens.splice(i - 1, 3, result);
       i--; // 인덱스 조정
     }
   }
 
-  // 덧셈 뺄셈 계산
+  // 덧셈, 뺄셈 처리
   for (let i = 0; i < tokens.length; i++) {
-    if (tokens[i] === "+" || tokens[i] === "-") {
+    if (tokens[i] === '+' || tokens[i] === '-') {
       const left = Number(tokens[i - 1]);
       const right = Number(tokens[i + 1]);
-      const result = tokens[i] === "+" ? left + right : left - right;
+      const result = tokens[i] === '+' ? left + right : left - right;
       tokens.splice(i - 1, 3, result);
       i--; // 인덱스 조정
     }
   }
-  // 최종 결과의 소수점 자릿수 조정
-  return decimalCalculate(Number(tokens[0]));
+
+  return decimalCalculate(Number(tokens[0])); // 최종 결과의 소수점 자릿수 조정
 }
 
 // 소수점 자릿수를 13자리로 제한하는 함수
 function decimalCalculate(result) {
   if (result % 1 !== 0) {
-    // 소수점이 있을 경우
     return parseFloat(result.toFixed(13)); // 소수점 13자리까지만 남김
   }
-  return result; // 정수일 경우 그대로 반환
+  return result;
 }
