@@ -11,7 +11,7 @@ input {
   padding: 10px;
   border: none;
   text-align: right;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 21px;
   letter-spacing: 1px;
   color: #a4a4a4;
@@ -35,6 +35,12 @@ button {
   font-size: 23px;
   font-weight: 500;
   line-height: 28px;
+  transition: all 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.95); /* 클릭 시 버튼 크기 축소 */
+  background-color: #d4d4d4; /* 클릭 시 배경색 변경 */
 }
 
 button.c-btn {
@@ -42,14 +48,26 @@ button.c-btn {
   color: #ff2e2e;
 }
 
+.c-btn:active {
+  background-color: #faa4a4;
+}
+
 button.oper-btn {
   background-color: #ff9404;
   color: #fff;
 }
 
+.oper-btn:active {
+  background-color: #e28201;
+}
+
 button.equals-btn {
   background-color: #30cb72;
   color: #fff;
+}
+
+.equals-btn:active {
+  background-color: #22ab5c;
 }
 
 .cal-wrap {

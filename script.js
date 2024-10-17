@@ -8,26 +8,43 @@ buttons.forEach((button) => {
   button.addEventListener('click', handleButtonClick);
 });
 
+// 키보드 입력 이벤트 처리
+document.addEventListener('keydown', handleKeyPress);
+
 // 버튼 클릭 이벤트 처리
 function handleButtonClick(event) {
   const btnEvent = event.target; // 클릭된 버튼
-  const textValue = btnEvent.textContent; // 버튼의 텍스트 값
   const value = btnEvent.value; // 버튼의 실제 값 (삭제 등 특별 기능)
-  const isOperator = btnEvent.classList.contains('operator'); // 버튼이 연산자인지 여부
 
   // 버튼 별 조건문
-  if (textValue === 'C') {
+  if (value === 'C') {
     clearInput();
-  } else if (textValue === '=') {
+  } else if (value === '=') {
     calculateResult();
   } else if (value === 'del') {
     removeLastCharacter();
-  } else if (textValue === '%') {
+  } else if (value === '%') {
     convertPercentage();
-  } else if (textValue === '()') {
+  } else if (value === '()') {
     handleParenthesis();
   } else {
-    handleInput(textValue, isOperator);
+    handleInput(value, btnEvent.classList.contains('operator')); // 연산자 여부를 체크
+  }
+}
+
+// 키보드 입력 처리
+function handleKeyPress(event) {
+  const key = event.key;
+
+  // 숫자 및 연산자 키 확인
+  if (/^[0-9+\-*/().]$/.test(key)) {
+    handleInput(key, /[+\-*/]/.test(key)); // 연산자 여부를 체크
+  } else if (key === 'Enter') {
+    calculateResult();
+  } else if (key === 'Backspace') {
+    removeLastCharacter();
+  } else if (key === 'c' || key === 'C') {
+    clearInput();
   }
 }
 
@@ -79,7 +96,7 @@ function handleParenthesis() {
 function handleInput(value, isOperator) {
   if (
     isInitialOperator(value, isOperator) ||
-    isRepeatOperator(value, isOperator) ||
+    isRepeatOperator(isOperator) ||
     isRepeatDecimal(value)
   ) {
     return;
@@ -91,7 +108,7 @@ function handleInput(value, isOperator) {
 }
 
 // 첫입력값 연산자 방지
-function isInitialOperator(isOperator) {
+function isInitialOperator(value, isOperator) {
   return currentInput === '' && isOperator;
 }
 
@@ -112,10 +129,8 @@ function isOperatorAfterOpenParenthesis(value) {
 
 // 괄호 안의 패턴이 여는 괄호 + 숫자 + 연산자 + 숫자 + 닫는 괄호인지 검증
 function isPatternInsideParenthesis(value) {
-  // 여는 괄호 갯수
-  const openCount = (currentInput.match(/\(/g) || []).length;
-  // 닫는 괄호 갯수
-  const closeCount = (currentInput.match(/\)/g) || []).length;
+  const openCount = (currentInput.match(/\(/g) || []).length; // 여는 괄호 갯수
+  const closeCount = (currentInput.match(/\)/g) || []).length; // 닫는 괄호 갯수
   const pattern = /\([0-9]+[+\-*/][0-9]+\)$/;
   if (openCount > closeCount) {
     return pattern.test(currentInput) || value !== ')';
@@ -147,26 +162,29 @@ function calculate(expression) {
   }
   const tokens = expression.match(/(\d+(\.\d+)?|\D)/g);
 
-  // 곱셈, 나눗셈 처리
+  // 곱셈 나눗셈 우선순위 계산
   for (let i = 0; i < tokens.length; i++) {
     if (tokens[i] === '*' || tokens[i] === '/') {
-      const [left, right] = [Number(tokens[i - 1]), Number(tokens[i + 1])];
+      // 연산자 기준 왼쪽과 오른쪽 값
+      const left = Number(tokens[i - 1]);
+      const right = Number(tokens[i + 1]);
       const result = tokens[i] === '*' ? left * right : left / right;
-      if (tokens[i] === '/' && right === 0) return '0으로 나눌 수 없음';
       tokens.splice(i - 1, 3, result);
-      i--;
+      i--; // 인덱스 조정
     }
   }
 
-  // 덧셈, 뺄셈 처리
+  // 덧셈 뺄셈 계산
   for (let i = 0; i < tokens.length; i++) {
     if (tokens[i] === '+' || tokens[i] === '-') {
-      const [left, right] = [Number(tokens[i - 1]), Number(tokens[i + 1])];
+      const left = Number(tokens[i - 1]);
+      const right = Number(tokens[i + 1]);
       const result = tokens[i] === '+' ? left + right : left - right;
       tokens.splice(i - 1, 3, result);
       i--;
     }
   }
+
   return decimalCalculate(Number(tokens[0]));
 }
 
