@@ -91,6 +91,7 @@ Created by: 윤지
 ![image.png](%5B24%2010%2011%5D%20%E1%84%80%E1%85%A8%E1%84%89%E1%85%A1%E1%86%AB%E1%84%80%E1%85%B5%20%E1%84%86%E1%85%A1%E1%86%AB%E1%84%83%E1%85%B3%E1%86%AF%E1%84%80%E1%85%B5%2011b998e0c20c80498d94cd8d4f20bbcf/image%201.png)
 
 - index.html
+
   ```html
   <!DOCTYPE html>
   <html lang="ko">
@@ -156,7 +157,9 @@ Created by: 윤지
     </body>
   </html>
   ```
+
 - script.js
+
   ```jsx
   const inputField = document.querySelector('.cal-ipt'); // 사용자 입력 필드
   const resultField = document.querySelector('.result'); // 계산 결과 필드
@@ -353,7 +356,9 @@ Created by: 윤지
     return result % 1 !== 0 ? parseFloat(result.toFixed(13)) : result;
   }
   ```
+
 - style.css
+
   ```css
   body {
     width: 323px;
@@ -441,4 +446,3 @@ Created by: 윤지
 
 1. 연산자, 괄호는 inputField 에서 css color 다르게 적용 ( 숫자와 연산자 구분하기)
 2. 괄호 + 연산도 계산 가능하게 예외처리 ⇒ 지금은 연산 + 괄호만 처리 중
-3.
