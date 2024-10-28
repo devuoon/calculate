@@ -6,7 +6,7 @@ body {
   padding: 66px 24px 26px 24px;
 }
 
-input {
+.cal-ipt {
   width: 100%;
   padding: 10px;
   border: none;
