@@ -154,9 +154,6 @@ const calculate = function (expression) {
 const decimalCalculate = (result) => (result % 1 !== 0 ? parseFloat(result.toFixed(13)) : result);
 
 // ===== 이벤트 처리 함수 =====
-const test = function () {
-  
-}
 
 // 버튼 클릭 이벤트 처리
 const handleButtonClick = function (event) {

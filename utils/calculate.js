@@ -1,16 +1,6 @@
 import { operators } from './global.js';
 
 export function calculate(tokens) {
-    // 토큰이 제공되지 않으면 오류 반환
-    if (!tokens || tokens.length === 0) {
-        return 'Error';
-    }
-
-    // 마지막 토큰이 연산자인 경우, 아무 일도 하지 않음
-    if (operators.includes(tokens[tokens.length - 1])) {
-        return; 
-    }
-
     // 연산자 우선순위 함수는 그대로 유지
     const operate = (a, operator, b) => {
         a = parseFloat(a);
@@ -24,6 +14,11 @@ export function calculate(tokens) {
             default: return 0;
         }
     };
+
+    // 예외처리 1. 마지막이 연산자로 끝나는 경우
+    if(operators.includes(tokens[tokens.length - 1])){
+        return;
+    }
 
     // 1. 곱셈, 나눗셈 우선 처리
     let i = 0;
