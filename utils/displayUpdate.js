@@ -57,21 +57,22 @@ export function deleteSingleDisplay(){
     }
 }
 
-// 백분율 계산하기
-export function percentDisplay(value) {
-    const tokens = currentInput(value); // 현재 입력값의 토큰을 가져옴
-    let lastToken = tokens[tokens.length - 1]; // 마지막 토큰 가져옴
+export function percentDisplay() {
+    const currentInputValue = formulaDisplay.textContent;
+    const tokens = currentInputValue.match(/\d+(\.\d+)?|\D/g) || [];
+    
+    if (tokens.length === 0) return; // 입력된 값이 없으면 리턴
 
-    // 마지막 토큰이 숫자인지 확인 (문자열을 숫자로 변환 후 확인)
-    const lastTokenNumber = parseFloat(lastToken);
-    if (!isNaN(lastTokenNumber)) {
-        const percent = lastTokenNumber * 0.01; // 백분율 계산
-        console.log(percent);
-
-        // 마지막 토큰을 백분율 값으로 교체
-        tokens[tokens.length - 1] = percent; // 배열에서 마지막 토큰 업데이트
+    // 마지막 입력된 값이 숫자인지 확인
+    const lastToken = tokens[tokens.length - 1];
+    if (!isNaN(lastToken)) { // 숫자인 경우에만 백분율 계산
+        const percentageValue = parseFloat(lastToken) * 0.01;
         
-        // 업데이트된 값을 입력창에 반영
-        formulaDisplay.textContent = tokens.join(' '); // 모든 토큰을 문자열로 결합하여 입력창에 표시
+        // 마지막 숫자를 백분율 값으로 대체하여 표시
+        tokens[tokens.length - 1] = percentageValue;
+        formulaDisplay.textContent = tokens.join(''); // 업데이트된 수식 표시
     }
 }
+
+
+
