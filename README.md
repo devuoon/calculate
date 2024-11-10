@@ -81,7 +81,3 @@
 ### 결과값 업데이트
 
 1. input의 값 변경해도 결과값 계속 업데이트 `inputField.value = currentInput`
-
-### 남은 기능
-
-2. 괄호 처리 3. 연산자는 색상 다르게

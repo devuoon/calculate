@@ -191,5 +191,5 @@ const handleKeyPress = function (event) {
 };
 
 // ===== 이벤트 핸들러 설정 =====
-buttons.forEach((button) => button.addEventListener('click', handleButtonClick));
+buttons.map((button) => button.addEventListener('click', handleButtonClick));
 document.addEventListener('keydown', handleKeyPress);

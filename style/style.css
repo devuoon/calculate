@@ -18,6 +18,10 @@ body {
   background-color: #fff;
 }
 
+.oper {
+  color: #ff9405; /* 연산자 색상 */
+}
+
 .result {
   text-align: right;
   margin: 30px 0 50px;
