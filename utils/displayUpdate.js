@@ -6,25 +6,29 @@ const resultDisplay = document.querySelector('.result'); // 결과창
 // 수식 입력 예외처리와 예외처리를 모두 통과한 수식은 토큰화 리턴
 export function currentInput(value) {
     const currentInput = formulaDisplay.textContent;
-    const tokens = currentInput.match(/\d+(\.\d+)?|\D/g) || []; // 빈 배열로 초기화
-    console.log(tokens);
-    // 예외처리 1. 첫 번째가 연산자일 경우
-    if(tokens.length === 0 && operators.includes(value)) { 
-        return; 
+    
+    // 첫 번째가 연산자일 경우 예외처리
+    if (currentInput.length === 0 && operators.includes(value)) { 
+        return []; 
+    }
+    
+    // 연산자가 연속으로 올 경우 예외처리
+    const tokens = currentInput.match(/\d+(\.\d+)?|\D/g) || [];
+    if (operators.includes(tokens[tokens.length - 1]) && operators.includes(value)) {
+        return tokens;
     }
 
-    // 예외처리 2. 연산자가 연속으로 올 경우
-    if(operators.includes(tokens[tokens.length-1]) && operators.includes(value)){
-        return;
-    }
-
-    // 예외처리3. '=', 'del', 'C'는 수식에 입력 안함 
+    // '=', 'del', 'C'는 수식에 입력하지 않음
     if (!resultHandlers.includes(value)) {
-        formulaDisplay.textContent += value; // valid한 경우에만 textContent에 추가
+        formulaDisplay.textContent += value; // 유효한 경우에만 textContent에 추가
     }
 
-    // 마지막으로 tokens 반환
-    return tokens;
+    // 입력을 formulaDisplay에 반영한 후 tokens 생성
+    const updatedInput = formulaDisplay.textContent;
+    const updatedTokens = updatedInput.match(/\d+(\.\d+)?|\D/g) || [];
+    
+    console.log(updatedTokens);
+    return updatedTokens; // updatedTokens 반환
 }
 
 // 수식 결과
@@ -32,7 +36,7 @@ export function updateDisplay(value) {
     let displayValue;
 
     // 15자리 이상이면 e 표기법으로 변환
-      if (value >= 1e15) {
+    if (value >= 1e15) {
         displayValue = value.toExponential(0); // 소수점 없이 e 표기법으로 변환
     } else {
         // 자연수인 경우, 소수점이 있는 경우에 따라 처리
@@ -41,7 +45,6 @@ export function updateDisplay(value) {
     // 결과창에 표시
     resultDisplay.textContent = displayValue;
 }
-
 
 // 입력 및 결과 초기화
 export function clearDisplay() {
@@ -74,5 +77,24 @@ export function percentDisplay() {
     }
 }
 
-
-
+export function ParenthesesDisplay(tokens) {
+    // 여는괄호 갯수가 같거나 적으면 여는괄호 입력, 많으면 닫는 괄호 입력
+    const openParenCount = tokens.filter(token => token === '(').length || 0;
+    const closeParenCount = tokens.filter(token => token === ')').length || 0;
+    console.log('openCount', openParenCount);
+    console.log('closeCount', closeParenCount);
+    // ()()() 이런식으로 연속 입력 불가 (수식 형태 입력되어야 닫는괄호 입력 가능)
+    if (openParenCount !== closeParenCount) {
+        if (tokens.length === 0 || operators.includes(tokens[tokens.length - 1])) {
+            formulaDisplay.textContent += '(';
+        }
+    } else if (openParenCount === closeParenCount){
+        formulaDisplay.textContent += ')';
+    }else {
+        // 여는괄호 다음에 연산자 입력되면 return
+        const lastToken = tokens[tokens.length - 1];
+        if (!operators.includes(lastToken) && lastToken !== '(') {
+            formulaDisplay.textContent += ')';
+        }
+    }
+}

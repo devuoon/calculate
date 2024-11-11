@@ -1,4 +1,9 @@
-import { currentInput, updateDisplay, clearDisplay, deleteSingleDisplay, percentDisplay } from './displayUpdate.js';
+import { currentInput, 
+    updateDisplay, 
+    clearDisplay, 
+    deleteSingleDisplay, 
+    percentDisplay, 
+    ParenthesesDisplay } from './displayUpdate.js';
 import { calculate } from './calculate.js';
 import { operators } from './global.js';
 
@@ -21,6 +26,9 @@ const handleButtonClick = (event) => {
         percentDisplay();
     } else if (operators.includes(value)) { // [+,-,*,/] 연산자 클릭 처리
         currentInput(value);
+    } else if( value === '()'){
+        const tokens = currentInput(value); // `currentInput`에서 토큰 생성
+        ParenthesesDisplay(tokens); // 생성된 토큰을 인자로 전달하여 호출
     } else {
         currentInput(value);
     }
