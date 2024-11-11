@@ -20,13 +20,13 @@ export function calculate(tokens) {
 function multipleHandler(tokens) {
   for (let i = 0; i < tokens.length; i++) {
     // 여는 괄호 앞에 숫자가 있으면 * 추가
-    if (tokens[i] === '(' && numbers.includes(tokens[i - 1])) {
+    if (tokens[i] === '(' && i > 0 && numbers.includes(tokens[i - 1])) {
       tokens.splice(i, 0, 'x');
       i++;
     }
 
     // 닫는 괄호 뒤에 숫자가 있으면 * 추가
-    if (tokens[i] === ')' && numbers.includes(tokens[i + 1])) {
+    if (tokens[i] === ')' && i < tokens.length - 1 && numbers.includes(tokens[i + 1])) {
       tokens.splice(i + 1, 0, 'x');
     }
   }

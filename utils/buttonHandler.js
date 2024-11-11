@@ -16,7 +16,6 @@ const handleButtonClick = (event) => {
   if (value === '=') {
     const tokens = currentInput(value); // currentInput 함수 호출
     if (tokens) {
-      // tokens이 null이 아니면 계산
       const result = calculate(tokens);
       console.log(result);
       if (result !== undefined) {
@@ -32,7 +31,7 @@ const handleButtonClick = (event) => {
   } else if (value === '()') {
     parenthesesDisplay();
   } else {
-    currentInput(value); // 다른 값 입력 처리
+    currentInput(value);
   }
 };
 

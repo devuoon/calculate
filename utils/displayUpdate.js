@@ -23,7 +23,7 @@ export function currentInput(value) {
     return; // 여는 괄호 뒤에 연산자 입력 차단
   }
 
-  // 예외처리3. '=', 'del', 'C'는 수식에 입력 안함
+  // 예외처리 4. '=', 'del', 'C'는 수식에 입력 안함
   if (!resultHandlers.includes(value)) {
     formulaDisplay.textContent += value;
   }
@@ -40,7 +40,7 @@ export function updateDisplay(value) {
     displayValue = value.toExponential(0); // 소수점 없이 e 표기법으로 변환
   } else {
     // 자연수인 경우, 소수점이 있는 경우에 따라 처리
-    displayValue = value % 1 !== 0 ? parseFloat(value.toFixed(14)) : value;
+    displayValue = value % 1 !== 0 ? parseFloat(value.toFixed(12)) : value;
   }
   // 결과창에 표시
   resultDisplay.textContent = displayValue;
