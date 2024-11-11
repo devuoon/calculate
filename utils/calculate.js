@@ -22,7 +22,7 @@ function multipleHandler(tokens) {
     // 여는 괄호 앞에 숫자가 있으면 * 추가
     if (tokens[i] === '(' && numbers.includes(tokens[i - 1])) {
       tokens.splice(i, 0, 'x');
-      i++; // 새로 추가된 *를 건너뛰기 위해 인덱스 증가
+      i++;
     }
 
     // 닫는 괄호 뒤에 숫자가 있으면 * 추가
@@ -43,7 +43,6 @@ function calcParentheses(tokens) {
   // 정규표현식으로 괄호 안의 수식을 찾고 반복 처리
   while (regex.test(exp)) {
     exp = exp.replace(regex, (innerExp) => {
-      // 괄호를 제거하고 토큰화
       const innerTokens = innerExp.replace(/[()]/g, '').match(/\d+(\.\d+)?|\D/g) || [];
       return calcOperators(innerTokens);
     });
